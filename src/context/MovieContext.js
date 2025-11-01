@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useCallback } from 'react';
 
 const MovieContext = createContext();
 
@@ -27,7 +27,7 @@ const movieReducer = (state, action) => {
         ...state,
         favorites: state.favorites.filter(movie => movie.id !== action.payload),
       };
-    case 'TOGGLE_FAVORITE':
+    case 'TOGGLE_FAVORITE': {
       const isFavorite = state.favorites.some(movie => movie.id === action.payload.id);
       if (isFavorite) {
         return {
@@ -40,6 +40,7 @@ const movieReducer = (state, action) => {
           favorites: [...state.favorites, action.payload],
         };
       }
+    }
     default:
       return state;
   }
@@ -48,7 +49,7 @@ const movieReducer = (state, action) => {
 export const MovieProvider = ({ children }) => {
   const [state, dispatch] = useReducer(movieReducer, initialState);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
       // Dados mockados para simular uma API
@@ -115,7 +116,7 @@ export const MovieProvider = ({ children }) => {
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: error.message });
     }
-  };
+  }, []);
 
   const addToFavorites = (movie) => {
     dispatch({ type: 'ADD_FAVORITE', payload: movie });

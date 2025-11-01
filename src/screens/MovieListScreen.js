@@ -16,7 +16,7 @@ export default function MovieListScreen({ navigation }) {
 
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [fetchMovies]);
 
   const renderMovie = ({ item }) => (
     <TouchableOpacity
